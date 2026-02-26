@@ -729,13 +729,25 @@
     btn.disabled = true;
     document.getElementById('loading-text').style.display = 'inline';
 
-    // 숨겨진 블록의 entry는 빈값으로 FormData에 포함되지 않도록
-    // 보이는 블록의 input만 포함한 FormData 생성
+    // 모든 entry를 포함 (건너뛴 항목은 빈값으로)
+    // 구글 폼은 entry가 빠지면 저장 안 되므로 전부 포함해야 함
+    const allEntries = [
+      'entry.567167381',  // Q1 문서명
+      'entry.467134102',  // Q2 외부문서
+      'entry.1607957790', // Q3 전결권자
+      'entry.1573183820', // Q4 항공당국
+      'entry.1358115854', // Q5 회사공통원칙
+      'entry.2039012194', // Q6 부문합의
+      'entry.2061870362', // Q7 하위문서기준
+      'entry.963197818',  // Q8 해당항목여부
+      'entry.116169277',  // Q9 부문전체기준
+      'entry.1765757057', // Q10 관리부문
+    ];
     const formData = new FormData();
-    visibleBlocks.forEach(block => {
-      block.querySelectorAll('input[type="text"], input[type="radio"]:checked').forEach(input => {
-        formData.append(input.name, input.value);
-      });
+    allEntries.forEach(name => {
+      const input = form.querySelector(`input[name="${name}"]:checked`) ||
+                    form.querySelector(`input[name="${name}"][type="text"]`);
+      formData.append(name, input ? input.value : '');
     });
 
     try {
