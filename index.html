@@ -614,23 +614,31 @@
       document.getElementById('submit-row').style.display = 'none';
 
       if (this.value === '예') {
-        // 예 → 바로 Q10
-        show('block-q10');
+        // 예 → 전결권자(Q3) → Q10 (Q4~Q9 건너뜀)
+        show('block-q3');
       } else {
-        // 아니오 → Q3
+        // 아니오 → Q3(전결권자) → Q4(항공당국)
         show('block-q3');
       }
       updateProgress();
     });
   });
 
-  // Q3: 전결권자 선택 시 Q4 표시
+  // Q3: 전결권자 선택 시 → 외부문서=예면 Q10, 아니오면 Q4
   document.querySelectorAll('input[name="entry.1345793363"]').forEach(radio => {
     radio.addEventListener('change', function() {
       ['block-q4','block-q5','block-q6','block-q7',
        'block-q8','block-q9','block-q10'].forEach(hide);
       document.getElementById('submit-row').style.display = 'none';
-      show('block-q4');
+
+      const isExternal = document.querySelector('input[name="entry.195738963"]:checked')?.value === '예';
+      if (isExternal) {
+        // 외부문서 → 전결권자 선택 후 바로 Q10
+        show('block-q10');
+      } else {
+        // 내부문서 → Q4(항공당국)로
+        show('block-q4');
+      }
       updateProgress();
     });
   });
@@ -775,7 +783,10 @@
       if (!rows || rows.length === 0) throw new Error('No rows');
 
       const lastRow = rows[rows.length - 1];
-      const qValue = lastRow.c[16]?.v;
+      // Q컬럼(index 16) = 관리번호 기본코드
+      // 혹시 비어있으면 행 전체에서 "-" 포함된 코드 형식 값을 찾음
+      const qValue = lastRow.c[16]?.v ||
+        lastRow.c.map(c => c?.v).find(v => v && typeof v === 'string' && v.includes('-'));
 
       if (!qValue) {
         if (fetchAttempts < 6) { setTimeout(() => fetchResult(), 3000); return; }
