@@ -623,18 +623,23 @@
     });
   });
 
-  // Q3: 항공당국 → 예/아니오 모두 Q4 제외, Q5~Q8
+  // Q3: 항공당국 → 예면 Q10, 아니오면 Q5~Q8
   document.querySelectorAll('input[name="entry.400947674"]').forEach(radio => {
     radio.addEventListener('change', function() {
       ['block-q4','block-q5','block-q6','block-q7',
        'block-q8','block-q9','block-q10'].forEach(hide);
       document.getElementById('submit-row').style.display = 'none';
 
-      // 항공당국 예/아니오 모두 → Q5~Q8
-      show('block-q5');
-      show('block-q6');
-      show('block-q7');
-      show('block-q8');
+      if (this.value === '예') {
+        // 항공당국 예 → 바로 Q10
+        show('block-q10');
+      } else {
+        // 항공당국 아니오 → Q5~Q8
+        show('block-q5');
+        show('block-q6');
+        show('block-q7');
+        show('block-q8');
+      }
       updateProgress();
     });
   });
