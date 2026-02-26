@@ -611,13 +611,19 @@
       ['block-q3','block-q4','block-q5','block-q6',
        'block-q7','block-q8','block-q9','block-q10'].forEach(hide);
       document.getElementById('submit-row').style.display = 'none';
-      // 예/아니오 모두 Q3(항공당국)부터 시작
-      show('block-q3');
+
+      if (this.value === '예') {
+        // 외부문서 예 → 항공당국(Q3) 건너뛰고 바로 전결권자(Q4)
+        show('block-q4');
+      } else {
+        // 외부문서 아니오 → 항공당국(Q3)
+        show('block-q3');
+      }
       updateProgress();
     });
   });
 
-  // Q3: 항공당국 → 예면 Q4(전결권자)→Q10, 아니오면 Q5~Q8
+  // Q3: 항공당국 → 예면 전결권자(Q4)→Q10, 아니오면 Q4 제외 Q5~Q8
   document.querySelectorAll('input[name="entry.400947674"]').forEach(radio => {
     radio.addEventListener('change', function() {
       ['block-q4','block-q5','block-q6','block-q7',
@@ -625,10 +631,10 @@
       document.getElementById('submit-row').style.display = 'none';
 
       if (this.value === '예') {
-        // 예 → Q4(전결권자) → Q10
+        // 항공당국 예 → 전결권자(Q4) → Q10
         show('block-q4');
       } else {
-        // 아니오 → Q5, Q6, Q7, Q8
+        // 항공당국 아니오 → Q4 제외, Q5~Q8
         show('block-q5');
         show('block-q6');
         show('block-q7');
