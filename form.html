@@ -134,13 +134,13 @@
     }
 
     // 8 -> 9
-    if(q8 === "예") {
+    if(q8 === "아니오") {
         document.getElementById('block-q9').classList.replace('hidden', 'visible');
     }
     
 
     // 최종 10번 노출 조건
-    if(q4 || (q2 === '아니오' && q3 === '예') || (q8 === '아니오') || q9) {
+    if(q4 || (q2 === '아니오' && q3 === '예') || (q8 === '예') || q9) {
       document.getElementById('block-q10').classList.replace('hidden', 'visible');
     }
 
